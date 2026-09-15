@@ -1,5 +1,5 @@
 window.FIREBASE_CONFIG = {
-  apiKey: "AIzaSyALbb2XarvhwY0VUU2ZIjSp0JxUbAbfahM",
+  apiKey: "AIzaSyALbb2XarvhwY0VUU2ZIjSpJ0xUbAbfahM",
   authDomain: "mechanical-quiz-eec08.firebaseapp.com",
   databaseURL: "https://mechanical-quiz-eec08-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "mechanical-quiz-eec08",

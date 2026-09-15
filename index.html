@@ -10,7 +10,7 @@
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brand">⚙️ Mechanical Engineering Knowledge Test</div><div class="sub">530 câu hỏi • 25 câu/lần • 8 nhóm chủ đề • học theo kết quả trước</div></div></header>
+<header><div class="wrap"><div class="brand">⚙️ Mechanical Engineering Knowledge Test</div><div class="sub">1000 câu hỏi • 25 câu/lần • 8 nhóm chủ đề • học theo kết quả trước</div></div></header>
 <div class="wrap">
 <section id="home" class="card">
  <div class="row between"><div><h2 style="margin:0 0 5px">📝 Bài kiểm tra</h2><div class="note">Thông tin nhân viên được lưu trên trình duyệt để lần sau không phải nhập lại.</div></div><button class="secondary" onclick="showPublicStats()">📊 Thống kê chung</button></div>
@@ -18,7 +18,7 @@
   <div><label>Mã nhân viên</label><input id="code" placeholder="PD1116" autocomplete="off"></div>
   <div><label>Họ tên</label><input id="name" placeholder="Ngô Thắng" autocomplete="off"></div>
  </div>
- <div style="margin-top:15px"><label>Chủ đề</label><select id="cat" onchange="updateTopicInfo()"><option value="ALL">Tất cả chủ đề</option></select><div id="topicInfo" class="topicInfo"><span>530 câu hỏi trong toàn bộ ngân hàng</span><span class="count">530 câu</span></div></div>
+ <div style="margin-top:15px"><label>Chủ đề</label><select id="cat" onchange="updateTopicInfo()"><option value="ALL">Tất cả chủ đề</option></select><div id="topicInfo" class="topicInfo"><span>1000 câu hỏi trong toàn bộ ngân hàng</span><span class="count">530 câu</span></div></div>
  <div class="row" style="margin-top:15px"><button class="primary" onclick="start()">Bắt đầu 25 câu</button><button class="secondary" onclick="show('adminLogin')">👨‍💼 Admin</button></div>
  <div class="hint">💡 Bài sau sẽ ưu tiên các câu bạn từng trả lời sai và chưa từng trả lời đúng; phần còn lại vẫn chọn ngẫu nhiên.</div>
 </section>
@@ -47,7 +47,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script><script src="static/firebase-config.js"></script>
 <script>
 let questions=[],exam=[],answers=[],cur=0,db=null,auth=null,employee={},submitting=false,lastAdminAttempts=[],topicCharts=[];
-const ADMIN_EMAIL='ngothang90@gmail.com', LAST_KEY='mechanicalQuizLastEmployeeV7';
+const ADMIN_EMAIL='ngothang90@gmail.com', LAST_KEY='mechanicalQuizLastEmployeeV9';
 const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 const TOPIC_GROUPS=[
  {id:'BASIC_MATERIAL_SURFACE',name:'1. Cơ khí cơ bản, Vật liệu & Bề mặt',cats:['A. Kiến thức cơ khí cơ bản','E. Vật liệu cơ khí','Material','H. Xử lý bề mặt','Surface']},
@@ -104,9 +104,9 @@ function renderTopicCharts(containerId,a){
     const total=topicCounts[g.id]||questions.filter(q=>g.cats.includes(q.category)).length;
     const rows=people.map(p=>{
       const m=p.topic[g.name]||{correct:new Set(),attempts:0};
-      const attempts=p.arr.filter(x=>x.category===g.name).length;
+      const attempts=p.arr.filter(x=>(x.details||[]).some(d=>d.category===g.name)).length;
       return {p,pct:total?m.correct.size/total*100:0,correct:m.correct.size,attempts};
-    }).filter(r=>r.correct>0||r.attempts>0).sort((a,b)=>b.pct-a.pct||b.attempts-a.attempts);
+    }).filter(r=>r.attempts>0).sort((a,b)=>b.pct-a.pct||b.attempts-a.attempts);
     const card=document.createElement('div'); card.className='topicChartCard';
     card.innerHTML=`<div class="topicChartHead"><div><b>${esc(g.name)}</b><div class="note">${total} câu hỏi • Tỷ lệ = số câu đã trả lời đúng ít nhất 1 lần / ${total} câu</div></div><span class="pill">${rows.length} người</span></div><div class="topicChartBody"><div class="topicChartCanvas"><canvas id="pubTopic_${idx}"></canvas></div><div class="attemptSide"><h4>Số lần làm</h4>${rows.length?rows.map(r=>`<div class="attemptRow"><span>${esc(r.p.code)}</span><b>${r.attempts}</b></div>`).join(''):'<div class="note">Chưa có dữ liệu.</div>'}</div></div>`;
     box.appendChild(card);
@@ -117,7 +117,7 @@ function renderTopicCharts(containerId,a){
   });
 }
 function renderRankings(a,people){
-  const total=questions.length||530;
+  const total=questions.length||1000;
   const byAttempts=[...people].sort((x,y)=>y.arr.length-x.arr.length||x.code.localeCompare(y.code));
   $('rankingAttempts').innerHTML=byAttempts.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.code)}</td><td>${esc(x.name)}</td><td><b>${x.arr.length}</b></td></tr>`).join('')||'<tr><td colspan="4">Chưa có dữ liệu.</td></tr>';
   const byAccuracy=[...people].map(x=>({...x,correctCount:x.allCorrect.size,pct:x.allCorrect.size/total*100})).sort((x,y)=>y.pct-x.pct||y.allCorrect.size-x.allCorrect.size||y.arr.length-x.arr.length);
@@ -126,7 +126,7 @@ function renderRankings(a,people){
 async function showPublicStats(){show('publicStats');try{await ensureAnon();let s=await db.collection('publicAttempts').orderBy('submittedAt','desc').get(),a=s.docs.map(d=>d.data());renderPublic(a)}catch(e){$('publicNotice').textContent='Chưa đọc được thống kê: '+e.message}}
 function renderPublic(a){
   const people=personMetrics(a);
-  $('pubPeople').textContent=people.length;$('pubAttempts').textContent=a.length;$('pubAvg').textContent=avg(a).toFixed(1)+'%';$('pubPass').textContent=(a.length?a.filter(x=>x.percentage>=70).length/a.length*100:0).toFixed(1)+'%';$('publicNotice').textContent='Dữ liệu được tổng hợp theo số câu khác nhau đã từng trả lời đúng; làm lại cùng một câu không cộng thêm vào tỷ lệ hoàn thành.';
+  $('pubPeople').textContent=people.length;$('pubAttempts').textContent=a.length;$('pubAvg').textContent=avg(a).toFixed(1)+'%';$('pubPass').textContent=(a.length?a.filter(x=>x.percentage>=70).length/a.length*100:0).toFixed(1)+'%';$('publicNotice').textContent='Chỉ bài đã NỘP mới được tính. Tỷ lệ dựa trên số câu khác nhau đã từng trả lời đúng; làm lại cùng một câu không cộng thêm.';
   renderRankings(a,people); renderTopicCharts('pubTopicCharts',a);
 }
 async function adminLogin(){try{await firebaseReady();if(auth.currentUser)await auth.signOut();const u=await auth.signInWithEmailAndPassword($('adminEmail').value.trim(),$('adminPass').value);if(u.user.email.toLowerCase()!==ADMIN_EMAIL){await auth.signOut();throw Error('Email không có quyền Admin.')}show('admin');await loadAdmin()}catch(e){$('adminError').textContent='Đăng nhập thất bại: '+e.message}}
@@ -136,7 +136,7 @@ async function loadAdmin(){
   $('aAttempts').textContent=a.length;$('aPeople').textContent=people.length;$('aAvg').textContent=avg(a).toFixed(1)+'%';$('aPass').textContent=(a.length?a.filter(x=>x.percentage>=70).length/a.length*100:0).toFixed(1)+'%';
   renderTopicCharts('adminTopicCharts',a);
   
-  const total=questions.length||530;
+  const total=questions.length||1000;
   const attemptRank=[...people].sort((x,y)=>y.arr.length-x.arr.length||x.code.localeCompare(y.code));
   $('aRankAttempts').innerHTML=attemptRank.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.code)}</td><td>${esc(x.name)}</td><td><b>${x.arr.length}</b></td></tr>`).join('')||'<tr><td colspan="4">Chưa có dữ liệu.</td></tr>';
   const allRank=[...people].map(x=>({...x,pct:x.allCorrect.size/total*100})).sort((x,y)=>y.pct-x.pct||y.allCorrect.size-x.allCorrect.size||y.arr.length-x.arr.length);
