@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mechanical Engineering Knowledge Test</title>
+<title>Mechanical Engineering Knowledge Test • V10</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <style>
 :root{--bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#667085;--line:#e4e7ec;--primary:#2563eb;--primary2:#1d4ed8;--soft:#eef4ff;--good:#15803d;--bad:#475467;--warn:#b45309}
@@ -10,7 +10,7 @@
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brand">⚙️ Mechanical Engineering Knowledge Test</div><div class="sub">1000 câu hỏi • 25 câu/lần • 8 nhóm chủ đề • học theo kết quả trước</div></div></header>
+<header><div class="wrap"><div class="brand">⚙️ Mechanical Engineering Knowledge Test</div><div class="sub">1.000 câu hỏi • 25 câu/lần • 8 nhóm chủ đề • học theo kết quả trước</div></div></header>
 <div class="wrap">
 <section id="home" class="card">
  <div class="row between"><div><h2 style="margin:0 0 5px">📝 Bài kiểm tra</h2><div class="note">Thông tin nhân viên được lưu trên trình duyệt để lần sau không phải nhập lại.</div></div><button class="secondary" onclick="showPublicStats()">📊 Thống kê chung</button></div>
@@ -18,7 +18,7 @@
   <div><label>Mã nhân viên</label><input id="code" placeholder="PD1116" autocomplete="off"></div>
   <div><label>Họ tên</label><input id="name" placeholder="Ngô Thắng" autocomplete="off"></div>
  </div>
- <div style="margin-top:15px"><label>Chủ đề</label><select id="cat" onchange="updateTopicInfo()"><option value="ALL">Tất cả chủ đề</option></select><div id="topicInfo" class="topicInfo"><span>1000 câu hỏi trong toàn bộ ngân hàng</span><span class="count">530 câu</span></div></div>
+ <div style="margin-top:15px"><label>Chủ đề</label><select id="cat" onchange="updateTopicInfo()"><option value="ALL">Tất cả chủ đề</option></select><div id="topicInfo" class="topicInfo"><span>Toàn bộ ngân hàng câu hỏi</span><span class="count">1000 câu</span></div></div>
  <div class="row" style="margin-top:15px"><button class="primary" onclick="start()">Bắt đầu 25 câu</button><button class="secondary" onclick="show('adminLogin')">👨‍💼 Admin</button></div>
  <div class="hint">💡 Bài sau sẽ ưu tiên các câu bạn từng trả lời sai và chưa từng trả lời đúng; phần còn lại vẫn chọn ngẫu nhiên.</div>
 </section>
@@ -143,5 +143,5 @@ async function loadAdmin(){
   $('aRankAccuracy').innerHTML=allRank.map((x,i)=>`<tr><td>${i+1}</td><td>${esc(x.code)}</td><td>${esc(x.name)}</td><td>${x.allCorrect.size} / ${total}</td><td><b>${x.pct.toFixed(1)}%</b></td></tr>`).join('')||'<tr><td colspan="5">Chưa có dữ liệu.</td></tr>';
 }
 
-fetch('questions.json').then(r=>r.json()).then(x=>{questions=x;initTopics();loadSaved();firebaseReady()}).catch(e=>alert('Không tải được questions.json: '+e));
+fetch('questions_1000.json?v=10').then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json()}).then(x=>{if(!Array.isArray(x)||x.length<1000)throw Error('Ngân hàng câu hỏi không đủ 1000 câu');questions=x;initTopics();loadSaved();firebaseReady()}).catch(e=>alert('Không tải được questions_1000.json: '+e.message));
 </script></body></html>
